@@ -4,9 +4,9 @@
 
 ## Features
 
-- [v] Send email through SMPT
-- [v] Send email through Amazon SES using API key
-- [v] Send email through Brevo using API key
+- [x] Send email through SMPT
+- [x] Send email through Amazon SES using API key
+- [x] Send email through Brevo using API key
 - [ ] Send message to Whatsapp
 - [ ] Send message to Telegram
 - [ ] Send message to Slack
