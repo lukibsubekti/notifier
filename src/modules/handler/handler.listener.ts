@@ -14,6 +14,6 @@ export class HandlerListener {
     setTimeout(async () => {
       await this.emailService.sendEmail(data);
       console.info('email sent async:', data);
-    }, 1000);
+    }, 100);
   }
 }

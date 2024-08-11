@@ -1,5 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { WorkerResult } from 'src/commons/app.type';
 import { EmailService } from '../email/email.service';
 import { SendEmailDto } from './receiver.dto';
 
@@ -17,6 +18,6 @@ export class ReceiverController {
     } 
 
     this.eventService.emit('email.send', data);
-    return data;
+    return new WorkerResult({ status: true, message: 'Email will be sent asynchronously' });
   }
 }
