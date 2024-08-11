@@ -1,0 +1,2 @@
+Halo, {{ fullName }}\n
+Selamat datang, kamu dapat mengakses akunmu melalui URL: {{ url }}.\n

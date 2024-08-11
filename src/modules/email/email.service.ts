@@ -1,6 +1,9 @@
+import { join } from 'node:path';
+import { readFileSync, existsSync } from 'node:fs';
 import * as nodemailer from 'nodemailer';
 import * as AWS from 'aws-sdk';
 import * as SibApiV3Sdk from 'sib-api-v3-sdk';
+import Handlebars from "handlebars";
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { WorkerResult } from 'src/commons/app.type';
@@ -57,11 +60,44 @@ export class EmailService {
     });
   }
 
+  getTemplateContent(name: string, ext: 'html' | 'txt' = 'html'): HandlebarsTemplateDelegate<any> | null {
+    try {
+      const filePath = join(process.cwd(), `templates/${name}.${ext}`);
+      const content = readFileSync(filePath, 'utf-8');
+      return Handlebars.compile(content);
+    } catch (error) {
+      console.error(error.message || error);
+      return null;
+    }
+  }
+
+  verifyTemplate(name: string): boolean {
+    // if no templae for html and txt, return false
+    if (
+      !existsSync(join(process.cwd(), `templates/${name}.html`))
+      && !existsSync(join(process.cwd(), `templates/${name}.txt`))
+    ) {
+      return false;
+    }
+
+    return true;
+  }
+
   /** @todo get template function */
   getTemplate(name: string) {
+    if (!this.verifyTemplate(name)) {
+      return null;
+    }
+
     return {
-      text(payload: any){ return JSON.stringify(payload) },
-      html(payload: any){ return JSON.stringify(payload) }
+      text: (payload: any) => { 
+        const template = this.getTemplateContent(name, 'txt');
+        return template ? template(payload) : '';
+      },
+      html: (payload: any) => {
+        const template = this.getTemplateContent(name, 'html');
+        return template ? template(payload) : '';
+      },
     }
   }
 
