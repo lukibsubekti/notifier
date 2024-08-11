@@ -1,0 +1,15 @@
+services:
+  notifier:
+    container_name: notifier-server
+    env_file:
+      - path: .env
+        required: true
+    image: luki/notifier:latest
+    ports:
+      # container port is based on APP_PORT value defined in your .env file
+      - "6000:6000"
+    volumes:
+      # replace sample templates with yours
+      - ./your-templates:/app/templates
+    restart: on-failure
+    
