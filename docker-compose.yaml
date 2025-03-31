@@ -7,9 +7,9 @@ services:
     image: luki/notifier:latest
     ports:
       # container port is based on APP_PORT value defined in your .env file
-      - "6000:6000"
+      - "3001:3001"
     volumes:
       # replace sample templates with yours
-      - ./your-templates:/app/templates
+      - ./templates:/app/templates
     restart: on-failure
     
