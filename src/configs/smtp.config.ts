@@ -8,4 +8,4 @@ export default registerAs('smtp', () => ({
   authPassword: process.env.SMTP_AUTH_PASSWORD || 'password',
   fromName: process.env.SMTP_FROM_NAME || 'Admin',
   fromEmail: process.env.SMTP_FROM_EMAIL || 'noreply@email.com',
-}))
+}));

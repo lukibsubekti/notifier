@@ -1,5 +1,5 @@
 import { plainToInstance } from 'class-transformer';
-import {validateSync } from 'class-validator';
+import { validateSync } from 'class-validator';
 import { EnvironmentVariables } from './config.type';
 
 export function validate(config: Record<string, unknown>) {

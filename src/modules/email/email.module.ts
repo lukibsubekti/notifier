@@ -6,7 +6,7 @@ import { EmailService } from './email.service';
   exports: [EmailService],
 })
 export class EmailModule {
-  static forRoot({ isGlobal = false }: {isGlobal: boolean}): DynamicModule {
+  static forRoot({ isGlobal = false }: { isGlobal: boolean }): DynamicModule {
     return {
       global: isGlobal,
       module: EmailModule,

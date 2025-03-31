@@ -5,9 +5,7 @@ import { SendEmailDto } from '../receiver/receiver.dto';
 
 @Injectable()
 export class HandlerListener {
-  constructor(
-    private readonly emailService: EmailService,
-  ) {}
+  constructor(private readonly emailService: EmailService) {}
 
   @OnEvent('email.send', { async: true })
   handleSendEmailEvent(data: SendEmailDto) {

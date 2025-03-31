@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import appConfig from './configs/app.config';
+import authConfig from './configs/auth.config';
 import smtpConfig from './configs/smtp.config';
 import sesConfig from './configs/ses.config';
 import brevoConfig from './configs/brevo.config';
@@ -11,24 +12,23 @@ import { ReceiverModule } from './modules/receiver/receiver.module';
 import { HandlerModule } from './modules/handler/handler.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       expandVariables: true,
-      envFilePath: [
-        '.env.local',
-        '.env',
-      ],
+      envFilePath: ['.env.local', '.env'],
       validate,
-      load: [ appConfig, smtpConfig, sesConfig, brevoConfig ],
+      load: [appConfig, authConfig, smtpConfig, sesConfig, brevoConfig],
     }),
     EventEmitterModule.forRoot({
       global: true,
       wildcard: true,
       delimiter: '.',
     }),
+    AuthModule,
     EmailModule.forRoot({
       isGlobal: true,
     }),

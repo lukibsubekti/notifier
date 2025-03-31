@@ -1,12 +1,11 @@
 import { Type } from 'class-transformer';
 import { IsBoolean, IsEnum, IsNumber, IsString } from 'class-validator';
 
-
 export enum EnvironmentNames {
   PROD = 'production',
   DEV = 'development',
   TEST = 'test',
-};
+}
 
 export class AppConfig {
   @IsEnum(EnvironmentNames)
@@ -17,6 +16,14 @@ export class AppConfig {
 
   @IsNumber()
   port: number;
+}
+
+class AuthConfig {
+  @IsBoolean()
+  enable: boolean;
+
+  @IsString()
+  token: string;
 }
 
 class SmtpConfig {
@@ -77,6 +84,12 @@ export class EnvironmentVariables {
   @IsString()
   APP_HOST: string;
 
+  @IsBoolean()
+  AUTH_ENABLE: boolean;
+
+  @IsString()
+  AUTH_TOKEN: string;
+
   @IsString()
   SMTP_HOST: string;
 
@@ -121,6 +134,9 @@ export class EnvironmentVariables {
 
   @Type(() => AppConfig)
   app: AppConfig;
+
+  @Type(() => AuthConfig)
+  auth: AuthConfig;
 
   @Type(() => SmtpConfig)
   smtp: SmtpConfig;

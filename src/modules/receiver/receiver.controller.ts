@@ -1,9 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { WorkerResult } from 'src/commons/app.type';
 import { EmailService } from '../email/email.service';
 import { SendEmailDto } from './receiver.dto';
+import { AuthGuard } from '../auth';
 
+@UseGuards(AuthGuard)
 @Controller('send')
 export class ReceiverController {
   constructor(
@@ -15,9 +17,12 @@ export class ReceiverController {
   async sendEmail(@Body() data: SendEmailDto) {
     if (data.is_sync) {
       return await this.emailService.sendEmail(data);
-    } 
+    }
 
     this.eventService.emit('email.send', data);
-    return new WorkerResult({ status: true, message: 'Email will be sent asynchronously' });
+    return new WorkerResult({
+      status: true,
+      message: 'Email will be sent asynchronously',
+    });
   }
 }

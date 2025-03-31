@@ -3,7 +3,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import * as nodemailer from 'nodemailer';
 import * as AWS from 'aws-sdk';
 import * as SibApiV3Sdk from 'sib-api-v3-sdk';
-import Handlebars from "handlebars";
+import Handlebars from 'handlebars';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { WorkerResult } from 'src/commons/app.type';
@@ -33,34 +33,38 @@ export class EmailService {
       region: configService.get('ses.region', { infer: true }),
       credentials: new AWS.Credentials({
         accessKeyId: configService.get('ses.accessKeyId', { infer: true }),
-        secretAccessKey: configService.get('ses.secretAccessKey', { infer: true }),
-      })
-    })
+        secretAccessKey: configService.get('ses.secretAccessKey', {
+          infer: true,
+        }),
+      }),
+    });
 
     // brevo
-    SibApiV3Sdk.ApiClient.instance.authentications['api-key'].apiKey = this.configService.get('brevo.apiKey', { infer: true });
+    SibApiV3Sdk.ApiClient.instance.authentications['api-key'].apiKey =
+      this.configService.get('brevo.apiKey', { infer: true });
   }
 
   async sendEmail(data: SendEmailDto) {
     if (data.method === 'smtp') {
       return this.sendSMTP(data);
-    }
-    else if (data.method === 'ses') {
+    } else if (data.method === 'ses') {
       return this.sendSES(data);
-    }
-    else if (data.method === 'brevo') {
+    } else if (data.method === 'brevo') {
       return this.sendBrevo(data);
     }
 
-    return new WorkerResult({ 
-      status: false, 
-      message: 'No supported sending method', 
-      errors: [`Method ${data.method} is not supported`], 
+    return new WorkerResult({
+      status: false,
+      message: 'No supported sending method',
+      errors: [`Method ${data.method} is not supported`],
       statusCode: HttpStatus.BAD_REQUEST,
     });
   }
 
-  getTemplateContent(name: string, ext: 'html' | 'txt' = 'html'): HandlebarsTemplateDelegate<any> | null {
+  getTemplateContent(
+    name: string,
+    ext: 'html' | 'txt' = 'html',
+  ): HandlebarsTemplateDelegate<any> | null {
     try {
       const filePath = join(process.cwd(), `templates/${name}.${ext}`);
       const content = readFileSync(filePath, 'utf-8');
@@ -74,8 +78,8 @@ export class EmailService {
   verifyTemplate(name: string): boolean {
     // if no templae for html and txt, return false
     if (
-      !existsSync(join(process.cwd(), `templates/${name}.html`))
-      && !existsSync(join(process.cwd(), `templates/${name}.txt`))
+      !existsSync(join(process.cwd(), `templates/${name}.html`)) &&
+      !existsSync(join(process.cwd(), `templates/${name}.txt`))
     ) {
       return false;
     }
@@ -90,7 +94,7 @@ export class EmailService {
     }
 
     return {
-      text: (payload: any) => { 
+      text: (payload: any) => {
         const template = this.getTemplateContent(name, 'txt');
         return template ? template(payload) : '';
       },
@@ -98,7 +102,7 @@ export class EmailService {
         const template = this.getTemplateContent(name, 'html');
         return template ? template(payload) : '';
       },
-    }
+    };
   }
 
   /** Send using SMTP protocol */
@@ -108,7 +112,12 @@ export class EmailService {
     if (!template) {
       const error = "Template doesn't exist";
       console.error(error);
-      return new WorkerResult({ status: false, statusCode: HttpStatus.BAD_REQUEST, message: 'No Template', errors: [error] });
+      return new WorkerResult({
+        status: false,
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'No Template',
+        errors: [error],
+      });
     }
 
     try {
@@ -119,13 +128,21 @@ export class EmailService {
         text: template.text(payload.payload), // plain text body
         html: template.html(payload.payload), // html body
       });
-    
-      console.log("Message sent: %s", info.messageId);
-      return new WorkerResult({ status: true, data: { messageId: info.messageId } });
+
+      console.log('Message sent: %s', info.messageId);
+      return new WorkerResult({
+        status: true,
+        data: { messageId: info.messageId },
+      });
     } catch (err) {
       console.error(err);
       const error = err.message || 'SMTP email sending has failed';
-      return new WorkerResult({ status: false, statusCode: HttpStatus.BAD_GATEWAY, message: 'Email Not Sent', errors: [error] });
+      return new WorkerResult({
+        status: false,
+        statusCode: HttpStatus.BAD_GATEWAY,
+        message: 'Email Not Sent',
+        errors: [error],
+      });
     }
   }
 
@@ -136,7 +153,12 @@ export class EmailService {
     if (!template) {
       const error = "Template doesn't exist";
       console.error(error);
-      return new WorkerResult({ status: false, statusCode: HttpStatus.BAD_REQUEST, message: 'No Template', errors: [error] });
+      return new WorkerResult({
+        status: false,
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'No Template',
+        errors: [error],
+      });
     }
 
     // Create sendEmail params
@@ -146,69 +168,85 @@ export class EmailService {
         // CcAddresses: [
         //   "EMAIL_ADDRESS",
         // ],
-        ToAddresses: [
-          payload.to_email,
-        ],
+        ToAddresses: [payload.to_email],
       },
       Message: {
         /* required */
         Body: {
           /* required */
           Html: {
-            Charset: "UTF-8",
+            Charset: 'UTF-8',
             Data: template.html(payload.payload),
           },
           Text: {
-            Charset: "UTF-8",
+            Charset: 'UTF-8',
             Data: template.text(payload.payload),
           },
         },
         Subject: {
-          Charset: "UTF-8",
+          Charset: 'UTF-8',
           Data: payload.subject,
         },
       },
-      Source: this.configService.get('ses.fromEmail', { infer: true }), /* required */
+      Source: this.configService.get('ses.fromEmail', {
+        infer: true,
+      }) /* required */,
       ReplyToAddresses: [
         this.configService.get('ses.fromEmail', { infer: true }),
       ],
     };
 
     // Create the promise and SES service object
-    const sendPromise = new AWS.SES({ apiVersion: "2010-12-01" })
+    const sendPromise = new AWS.SES({ apiVersion: '2010-12-01' })
       .sendEmail(params)
       .promise();
 
     try {
       const result = await sendPromise;
       console.log('SES:', result.MessageId);
-      return new WorkerResult({ status: true, data: { messageId: result.MessageId } });
+      return new WorkerResult({
+        status: true,
+        data: { messageId: result.MessageId },
+      });
     } catch (err) {
       console.error(err);
       const error = err.message || 'SES email sending has failed';
-      return new WorkerResult({ status: false, statusCode: HttpStatus.BAD_GATEWAY, message: 'Email Not Sent', errors: [error] });
+      return new WorkerResult({
+        status: false,
+        statusCode: HttpStatus.BAD_GATEWAY,
+        message: 'Email Not Sent',
+        errors: [error],
+      });
     }
   }
 
   /** Send using Brevo */
   async sendBrevo(payload: SendEmailDto) {
-    let additional: { htmlContent?: string; templateId?: string | number; params?: any } = {}
+    let additional: {
+      htmlContent?: string;
+      templateId?: string | number;
+      params?: any;
+    } = {};
 
     if (payload.brevo_template) {
       additional = {
         templateId: payload.brevo_template,
         params: {
           ...payload.payload,
-        }
+        },
       };
-
     } else {
       const template = this.getTemplate(payload.template);
 
       if (!template) {
         const error = "Template doesn't exist";
         console.error(error);
-        return new WorkerResult({ status: false, statusCode: HttpStatus.BAD_REQUEST, message: 'No Template', errors: [error] });
+        return new WorkerResult({
+          status: false,
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: 'No Template',
+          errors: [error],
+        });
       }
 
       additional = {
@@ -216,18 +254,20 @@ export class EmailService {
       };
     }
 
-    let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+    const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
     let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail(); // SendSmtpEmail | Values to send a transactional email
 
     sendSmtpEmail = {
-      sender:{  
-        name: this.configService.get('brevo.fromName', { infer: true}),
-        email: this.configService.get('brevo.fromEmail', { infer: true}),
+      sender: {
+        name: this.configService.get('brevo.fromName', { infer: true }),
+        email: this.configService.get('brevo.fromEmail', { infer: true }),
       },
-      to: [{
-        email: payload.to_email,
-        name: payload.to_name,
-      }],
+      to: [
+        {
+          email: payload.to_email,
+          name: payload.to_name,
+        },
+      ],
       subject: payload.subject,
       headers: {
         'content-type': 'application/json',
@@ -238,15 +278,27 @@ export class EmailService {
     return new Promise<WorkerResult<any>>((resolve, reject) => {
       apiInstance
         .sendTransacEmail(sendSmtpEmail)
-        .then(function(data) {
+        .then(function (data) {
           console.log('API called successfully. Returned data: ', data);
-          resolve(new WorkerResult({ status: true, data: { messageId: data.messageId } }));
+          resolve(
+            new WorkerResult({
+              status: true,
+              data: { messageId: data.messageId },
+            }),
+          );
         })
-        .catch(function(err) {
+        .catch(function (err) {
           console.error(err);
           const error = err.message || 'Brevo email sending has failed';
-          resolve(new WorkerResult({ status: false, statusCode: HttpStatus.BAD_GATEWAY, message: 'Email Not Sent', errors: [error] })); 
+          resolve(
+            new WorkerResult({
+              status: false,
+              statusCode: HttpStatus.BAD_GATEWAY,
+              message: 'Email Not Sent',
+              errors: [error],
+            }),
+          );
         });
-    })
+    });
   }
 }
