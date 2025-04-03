@@ -1,0 +1,11 @@
+Welcome to {{ appName }}!
+
+Hi {{ userName }},
+
+Congratulations! Your account has been successfully registered.
+You can now log in and start exploring all the features we have to offer.
+If you have any questions, feel free to reach out to our support team.
+
+Thank you for joining us!
+
+© {{ year }} {{ appName }}. All rights reserved.

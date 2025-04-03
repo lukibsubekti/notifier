@@ -1,0 +1,11 @@
+Selamat datang di {{ appName }}!
+
+Hai {{ userName }},
+
+Selamat! Akun Anda telah berhasil terdaftar.
+Sekarang Anda dapat masuk dan mulai menjelajahi semua fitur yang kami tawarkan.
+Jika Anda memiliki pertanyaan, jangan ragu untuk menghubungi tim dukungan kami.
+
+Terima kasih telah bergabung dengan kami!
+
+© {{ year }} {{ appName }}. Hak cipta dilindungi.
