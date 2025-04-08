@@ -1,0 +1,11 @@
+Verifikasi Akun Berhasil
+
+Hai {{ userName }},
+
+Selamat! Akun Anda telah berhasil diverifikasi pada {{ date }}. 
+Anda sekarang dapat menjelajahi semua fitur untuk akun yang terverifikasi. 
+Jika Anda memiliki pertanyaan, jangan ragu untuk menghubungi tim dukungan kami. 
+
+Terima kasih telah bergabung dengan kami!
+
+© {{ year }} {{ appName }}

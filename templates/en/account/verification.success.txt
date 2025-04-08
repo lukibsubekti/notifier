@@ -1,0 +1,11 @@
+Account Verification Success
+
+Hi {{ userName }},
+
+Congratulations! Your account has been verified on {{ date }}. 
+You can start exploring all the features for verified account. 
+If you have any questions, feel free to reach out to our support team.
+
+Thank you for joining us!
+
+© {{ year }} {{ appName }}

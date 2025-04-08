@@ -61,6 +61,7 @@ export class EmailService {
     });
   }
 
+  /** @todo implement content container (header, footer) */
   getTemplateContent(
     name: string,
     ext: 'html' | 'txt' = 'html',
@@ -87,7 +88,6 @@ export class EmailService {
     return true;
   }
 
-  /** @todo get template function */
   getTemplate(name: string) {
     if (!this.verifyTemplate(name)) {
       return null;

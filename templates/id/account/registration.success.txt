@@ -8,4 +8,4 @@ Jika Anda memiliki pertanyaan, jangan ragu untuk menghubungi tim dukungan kami.
 
 Terima kasih telah bergabung dengan kami!
 
-© {{ year }} {{ appName }}. Hak cipta dilindungi.
+© {{ year }} {{ appName }}
