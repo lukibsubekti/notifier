@@ -42,6 +42,15 @@ export class EmailService {
     // brevo
     SibApiV3Sdk.ApiClient.instance.authentications['api-key'].apiKey =
       this.configService.get('brevo.apiKey', { infer: true });
+
+    // setup handlebars
+    Handlebars.registerPartial(
+      'htmlLayout',
+      readFileSync(
+        join(process.cwd(), `templates/partials/layout.html`),
+        'utf-8',
+      ),
+    );
   }
 
   async sendEmail(data: SendEmailDto) {
@@ -68,7 +77,12 @@ export class EmailService {
   ): HandlebarsTemplateDelegate<any> | null {
     try {
       const filePath = join(process.cwd(), `templates/${name}.${ext}`);
-      const content = readFileSync(filePath, 'utf-8');
+      let content = readFileSync(filePath, 'utf-8');
+
+      if (ext === 'html') {
+        content = `{{#> htmlLayout}}${content}{{/htmlLayout}}`;
+      }
+
       return Handlebars.compile(content);
     } catch (error) {
       console.error(error.message || error);

@@ -15,7 +15,9 @@
 
 1. Create templates.  
     Templates are stored in `/templates` directory. We can create a template inside subdirectories under `/templates`. It is recommended we have the template with both `html` and `txt` format as the email sender function will try to render both formats. 
-    For example, we have `/templates/en/sample.hello.html` and `/templates/en/sample.hello.txt`. Then, in the HTPP request body we can select the template by setting the `template` field to `en/sample.hello`.
+    For example, we have `/templates/en/sample.hello.html` and `/templates/en/sample.hello.txt`. Then, in the HTPP request body, we can select the template by setting the `template` field to `en/sample.hello`.
+
+1. A special file as an HTML content wrapper is stored in `/templates/partials/layout.html`.
 
 1. Create and configure `.env` file based on `.env.sample`.
 
@@ -63,7 +65,7 @@ To send an email, send a `POST` request to `http://<your_host>:<your_port>/send`
 - `subject`: string.  
     Subject of email.
 - `payload`: object.  
-    The content depends on the target template.
+    The object content depends on the target template.
 - `brevo_template`: string or number.  
     Template number in Brevo. It can be used if the method is “brevo”. 
 
@@ -75,9 +77,9 @@ For example:
     "to_email": "lukibsubekti@gmail.com",
     "to_name": "Luki",
     "subject": "Registration Success",
-    "payload": { "fullName": "Luki", "url": "http://google.com" },
+    "payload": { "userName": "Luki", "appName": "Notifier", "year": "2025" },
     "method": "smtp",
-    "template": "en/sample.hello"
+    "template": "en/account/registration.success"
 }
 ```
 
