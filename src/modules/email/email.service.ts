@@ -51,6 +51,13 @@ export class EmailService {
         'utf-8',
       ),
     );
+    Handlebars.registerPartial(
+      'txtLayout',
+      readFileSync(
+        join(process.cwd(), `templates/partials/layout.txt`),
+        'utf-8',
+      ),
+    );
   }
 
   async sendEmail(data: SendEmailDto) {
@@ -78,10 +85,7 @@ export class EmailService {
     try {
       const filePath = join(process.cwd(), `templates/${name}.${ext}`);
       let content = readFileSync(filePath, 'utf-8');
-
-      if (ext === 'html') {
-        content = `{{#> htmlLayout}}${content}{{/htmlLayout}}`;
-      }
+      content = `{{#> ${ext}Layout}}${content}{{/${ext}Layout}}`;
 
       return Handlebars.compile(content);
     } catch (error) {
@@ -266,6 +270,9 @@ export class EmailService {
       additional = {
         htmlContent: template.html(payload.payload),
       };
+
+      // testing
+      // console.log('txt:', template.text(payload.payload));
     }
 
     const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();

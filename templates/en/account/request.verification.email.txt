@@ -1,0 +1,4 @@
+Hi {{ userName }},
+
+Visit the link below to verify your email address:
+{{ verificationLink }}

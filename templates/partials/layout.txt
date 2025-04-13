@@ -1,0 +1,10 @@
+{{#if headerContent}}
+{{ headerContent }}
+{{/if}}
+
+{{> @partial-block }}
+
+{{#if appName}}
+
+© {{ year }} {{ appName }}
+{{/if}}

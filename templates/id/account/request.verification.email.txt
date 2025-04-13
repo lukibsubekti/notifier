@@ -1,0 +1,4 @@
+Hai {{ userName }},
+
+Kunjungi tautan berikut ini untuk memverifikasi alamat email kamu:
+{{ verificationLink }}

@@ -17,7 +17,7 @@
     Templates are stored in `/templates` directory. We can create a template inside subdirectories under `/templates`. It is recommended we have the template with both `html` and `txt` format as the email sender function will try to render both formats. 
     For example, we have `/templates/en/sample.hello.html` and `/templates/en/sample.hello.txt`. Then, in the HTPP request body, we can select the template by setting the `template` field to `en/sample.hello`.
 
-1. A special file as an HTML content wrapper is stored in `/templates/partials/layout.html`.
+1. A special file as an HTML content wrapper is stored in `/templates/partials/layout.html`. Meanwhile, the text content wrapper is stored in `/templates/partials/layout.txt`
 
 1. Create and configure `.env` file based on `.env.sample`.
 
